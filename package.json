@@ -1,9 +1,18 @@
 {
   "name": "croissant-json",
+  "version": "0.1.0",
+  "description": "A better JSON library that supports tailing commas and comments. Made for recreational purposes.",
   "module": "index.ts",
   "type": "module",
   "scripts": {
+      "build": "tsc --project tsconfig.json",
       "test": "vitest"
+  },
+  "author": "Eiliya Abedianamiri <iliaabedianamiri@gmail.com> (https://iliabedian.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iliaamiri/croissant-json.git"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -11,5 +20,14 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "keywords": [
+    "json",
+    "croissant json",
+    "tailing commas in json",
+    "comments in json",
+    "json stringifier",
+    "json parser",
+    "json library"
+  ]
 }
