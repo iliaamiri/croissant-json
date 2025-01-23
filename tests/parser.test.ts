@@ -168,6 +168,7 @@ it("primitive values", () => {
     ["+1", 1],
     ["+11", 11],
     ["+11.1", 11.1],
+    ["+11.32032", 11.32032],
     ["+11e10", 11e10],
     ['"string"', "string"],
     ['"string with \\"escaped\\" quotes"', 'string with "escaped" quotes']
