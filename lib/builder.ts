@@ -1,4 +1,4 @@
-import { type Node, NodeType } from "./parser.ts"
+import { type Node, NodeType } from "./tokenParser.ts"
 import { log } from "./utils.ts"
 
 export function buildObject(node: Node) {

@@ -1,5 +1,5 @@
 import { lex } from "./lexer.ts"
-import { parseTokens } from "./parser.ts"
+import { parseTokens } from "./tokenParser.ts"
 import { buildObject } from "./builder.ts"
 import { stringify } from "./stringifier.ts"
 
