@@ -1,11 +1,13 @@
 # Croissant JSON
-Croissant JSON (pronounced ʒeɪsɔn [🔉](https://youtu.be/uR-f4b0G9lo?si=p68YVjvRKJnR6JDw&t=45)), is a better JSON library 
+
+Croissant JSON (pronounced ʒeɪsɔn [🔉](https://youtu.be/uR-f4b0G9lo?si=p68YVjvRKJnR6JDw&t=45)), is a better JSON library
 I made for recreational purposes that supports **tailing commas** and **comments**!
 
-**DISCLAIMER**: This is a hobby project and I work on it whenever I have the mood to work on it. So, PLEASE do not use 
+**DISCLAIMER**: This is a hobby project and I work on it whenever I have the mood to work on it. So, PLEASE do not use
 this in your projects that you care about. Use it at your own discretion.
 
 Example:
+
 ```ts
 const jsonable = `{
     "name": "Ilia",
@@ -30,11 +32,11 @@ const jsonable = `{
             "array": [1, 2, true, [], {}, "string", -2]
         }
     }, // <--- notice the trailing comma is allowed. _Ungodly_ by the spec, I know, but I like it.
-}`;
+}`
 
-const parsed = jsonParse(jsonable);
+const parsed = jsonParse(jsonable)
 
-console.log(parsed);
+console.log(parsed)
 /* output
     {
       name: "Ilia",
@@ -64,6 +66,7 @@ console.log(parsed);
 ```
 
 ## How to try it
+
 To install dependencies:
 
 ```bash

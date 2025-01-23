@@ -5,8 +5,10 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-      "build": "tsc --project tsconfig.json",
-      "test": "vitest"
+    "build": "tsc --project tsconfig.json",
+    "test": "vitest",
+    "prettier-check": "prettier --check .",
+    "prettier-format": "prettier --write ."
   },
   "author": "Eiliya Abedianamiri <iliaabedianamiri@gmail.com> (https://iliabedian.com)",
   "license": "MIT",

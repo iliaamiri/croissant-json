@@ -54,14 +54,7 @@ export function lex(
       caret += 1
     }
 
-    return lex(
-      text,
-      caret,
-      tokens,
-      isRoot,
-      nextClosingDelimiter,
-      lineNumber + 1
-    )
+    return lex(text, caret, tokens, isRoot, nextClosingDelimiter, lineNumber + 1)
   }
   if (
     character === os.EOL ||
@@ -69,27 +62,13 @@ export function lex(
     character === "\n" ||
     character === "\r\n"
   ) {
-    return lex(
-      text,
-      caret + 1,
-      tokens,
-      isRoot,
-      nextClosingDelimiter,
-      lineNumber + 1
-    )
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber + 1)
   }
   if (character === undefined) {
     return [tokens, caret, lineNumber]
   }
   if (character === " ") {
-    return lex(
-      text,
-      caret + 1,
-      tokens,
-      isRoot,
-      nextClosingDelimiter,
-      lineNumber
-    )
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
   if (character === nextClosingDelimiter) {
     return [tokens, caret, lineNumber]
@@ -107,26 +86,12 @@ export function lex(
       line: lineNumber
     })
 
-    return lex(
-      text,
-      caret + 1,
-      tokens,
-      isRoot,
-      nextClosingDelimiter,
-      lineNumber
-    )
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
   if (character === operator) {
     tokens.push({ name: TokenName.Operator, value: operator, line: lineNumber })
 
-    return lex(
-      text,
-      caret + 1,
-      tokens,
-      isRoot,
-      nextClosingDelimiter,
-      lineNumber
-    )
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
   if (character === "[" || character === "{") {
     const tokenName =
@@ -150,14 +115,7 @@ export function lex(
       return [tokens, caretAtClosing, ln]
     }
 
-    return lex(
-      text,
-      caretAtClosing + 1,
-      tokens,
-      false,
-      nextClosingDelimiter,
-      ln
-    )
+    return lex(text, caretAtClosing + 1, tokens, false, nextClosingDelimiter, ln)
   }
 
   // Handle string
@@ -203,11 +161,7 @@ export function lex(
 
     caret += 1
 
-    while (
-      !isNaN(parseInt(text[caret])) ||
-      text[caret] === "e" ||
-      text[caret] === "E"
-    ) {
+    while (!isNaN(parseInt(text[caret])) || text[caret] === "e" || text[caret] === "E") {
       tokens[tokens.length - 1].value += text[caret]
       caret += 1
     }
@@ -230,9 +184,7 @@ export function lex(
     const word = text.slice(caret, caret + 4)
 
     if (word !== "true") {
-      throw new Error(
-        `Invalid token. expected \`true\` at (caret ${caret}): ${word}`
-      )
+      throw new Error(`Invalid token. expected \`true\` at (caret ${caret}): ${word}`)
     }
 
     tokens.push({ name: TokenName.TrueLiteral, value: word, line: lineNumber })
@@ -243,9 +195,7 @@ export function lex(
     const word = text.slice(caret, caret + 5)
 
     if (word !== "false") {
-      throw new Error(
-        `Invalid token. expected \`false\` at (caret ${caret}): ${word}`
-      )
+      throw new Error(`Invalid token. expected \`false\` at (caret ${caret}): ${word}`)
     }
 
     tokens.push({ name: TokenName.FalseLiteral, value: word, line: lineNumber })
@@ -256,9 +206,7 @@ export function lex(
     const word = text.slice(caret, caret + 4)
 
     if (word !== "null") {
-      throw new Error(
-        `Invalid token. expected \`null\` at (caret ${caret}): ${word}`
-      )
+      throw new Error(`Invalid token. expected \`null\` at (caret ${caret}): ${word}`)
     }
 
     tokens.push({ name: TokenName.NullLiteral, value: word, line: lineNumber })

@@ -77,9 +77,7 @@ export function parseTokens(
     pointer += 1
 
     if (tokens[pointer].name !== TokenName.Operator) {
-      throw new Error(
-        "Expected a colon to assign a literal to the object field"
-      )
+      throw new Error("Expected a colon to assign a literal to the object field")
     }
 
     return parseTokens(tokens, pointer + 1, n)
@@ -133,10 +131,7 @@ export function parseTokens(
     return [pointer, node]
   }
 
-  if (
-    token.name === TokenName.TrueLiteral ||
-    token.name === TokenName.FalseLiteral
-  ) {
+  if (token.name === TokenName.TrueLiteral || token.name === TokenName.FalseLiteral) {
     node.children.push({
       type: NodeType.BooleanLiteral,
       value: token.value === "true",

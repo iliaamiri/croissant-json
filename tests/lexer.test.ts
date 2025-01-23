@@ -18,17 +18,13 @@ it("should lex the string", () => {
 it("should lex the number", () => {
   const [tokens] = lex(`123`)
 
-  expect(tokens).toMatchObject([
-    { name: TokenName.NumberLiteral, value: "123", line: 1 }
-  ])
+  expect(tokens).toMatchObject([{ name: TokenName.NumberLiteral, value: "123", line: 1 }])
 })
 
 it("should lex the true", () => {
   const [tokens] = lex(`true`)
 
-  expect(tokens).toMatchObject([
-    { name: TokenName.TrueLiteral, value: "true", line: 1 }
-  ])
+  expect(tokens).toMatchObject([{ name: TokenName.TrueLiteral, value: "true", line: 1 }])
 })
 
 it("should lex the false", () => {
@@ -42,9 +38,7 @@ it("should lex the false", () => {
 it("should lex the null", () => {
   const [tokens] = lex(`null`)
 
-  expect(tokens).toMatchObject([
-    { name: TokenName.NullLiteral, value: "null", line: 1 }
-  ])
+  expect(tokens).toMatchObject([{ name: TokenName.NullLiteral, value: "null", line: 1 }])
 })
 
 it("should lex the object", () => {

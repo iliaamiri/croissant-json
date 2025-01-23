@@ -2,7 +2,7 @@
   "tabWidth": 2,
   "useTabs": false,
   "semi": false,
-  "printWidth": 80,
+  "printWidth": 90,
   "endOfLine": "lf",
   "trailingComma": "none"
 }
