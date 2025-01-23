@@ -1,5 +1,5 @@
 export const memory = {
-  logEnabled: true
+  logEnabled: false
 }
 
 export function log(...args: any) {

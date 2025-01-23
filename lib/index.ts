@@ -5,7 +5,7 @@ import { buildObject } from "./builder.ts"
 export function jsonParse<T>(value: string): T {
   const [tokens] = lex(value)
 
-  const parsed = parse(tokens)
+  const [, parsed] = parse(tokens)
 
   return buildObject(parsed) as T
 }

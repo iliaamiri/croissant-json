@@ -14,13 +14,27 @@ const jsonable = `{
     "favoriteOs": "Ubuntu",
     "osUsingBecauseYouHaveTo": "Windows",
     "likesGaming": false,
-    "comments": "I love icecreams."
+    "comments": "I love icecreams.",
+    "mixedArray": ["string", 12, true, [], 1],
+    "nestedObject": {
+        "nestedString": "string",
+        "nestedNumber": 12,
+        "nestedBoolean": true,
+        "nestedArray": [1, 2, true, [], {}, "string", -2],
+        "nestedObject": {
+            "float": 1.23,
+            "int": 12,
+            "boolean": true,
+            "string": "string",
+            "null": null,
+            "array": [1, 2, true, [], {}, "string", -2]
+        }
+    }
 }`;
 
 const parsed = jsonParse(jsonable);
 
 console.log(parsed);
-
 /* output
     {
       name: "Ilia",
@@ -30,6 +44,21 @@ console.log(parsed);
       osUsingBecauseYouHaveTo: "Windows",
       likesGaming: false,
       comments: "I love icecreams.",
+      mixedArray: [ "string", 12, true, [], 1 ],
+      nestedObject: {
+        nestedString: "string",
+        nestedNumber: 12,
+        nestedBoolean: true,
+        nestedArray: [ 1, 2, true, [], [Object ...], "string", -2 ],
+        nestedObject: {
+          float: 1.23,
+          int: 12,
+          boolean: true,
+          string: "string",
+          null: null,
+          array: [ 1, 2, true, [], [Object ...], "string", -2 ],
+        },
+      },
     }
 */
 ```

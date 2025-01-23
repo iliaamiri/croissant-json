@@ -28,44 +28,39 @@ export function parse(
     parent: null,
     children: []
   }
-): any {
-  log("@parse: token", tokens[pointer])
+): [number, Node] {
+  log(
+    "@parse: token",
+    tokens[pointer],
+    "pointer:",
+    pointer,
+    "node.type:",
+    node.type
+  )
 
   const token = tokens[pointer]
 
   if (token === undefined) {
-    return node
+    return [pointer, node]
   }
-  if (token.value === "}") {
-    if (
+  if (token.value === "]" || token.value === "}") {
+    if (node.parent && node.parent.type === NodeType.Array) {
+      return parse(tokens, pointer + 1, node.parent)
+    } else if (
       node.parent &&
       node.parent.parent &&
       node.parent.type === NodeType.ObjectField
     ) {
-      parse(tokens, pointer + 1, node.parent.parent)
+      return parse(tokens, pointer + 1, node.parent.parent)
     }
 
-    return node
-  }
-  if (token.value === "]") {
-    if (
-      node.parent &&
-      node.parent.parent &&
-      node.parent.type === NodeType.ObjectField
-    ) {
-      parse(tokens, pointer + 1, node.parent.parent)
-    }
-
-    return node
+    return [pointer, node]
   }
   if (token.value === ",") {
-    parse(tokens, pointer + 1, node)
-
-    return node
+    return parse(tokens, pointer + 1, node)
   }
 
   if (node.type === NodeType.Object) {
-    console.log(token)
     if (token.name !== TokenName.StringLiteral) {
       throw new Error("Object key must be a string")
     }
@@ -87,9 +82,7 @@ export function parse(
       )
     }
 
-    parse(tokens, pointer + 1, n)
-
-    return node
+    return parse(tokens, pointer + 1, n)
   }
 
   if (token.name === TokenName.NumberLiteral) {
@@ -101,13 +94,11 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      parse(tokens, pointer + 1, node)
+      return parse(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      parse(tokens, pointer + 1, node.parent)
+      return parse(tokens, pointer + 1, node.parent)
     }
-
-    return node
   }
   if (token.name === TokenName.StringLiteral) {
     node.children.push({
@@ -118,13 +109,11 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      parse(tokens, pointer + 1, node)
+      return parse(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      parse(tokens, pointer + 1, node.parent)
+      return parse(tokens, pointer + 1, node.parent)
     }
-
-    return node
   }
   if (token.name === TokenName.NullLiteral) {
     node.children.push({
@@ -135,13 +124,13 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      parse(tokens, pointer + 1, node)
+      return parse(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      parse(tokens, pointer + 1, node.parent)
+      return parse(tokens, pointer + 1, node.parent)
     }
 
-    return node
+    return [pointer, node]
   }
 
   if (
@@ -156,13 +145,11 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      parse(tokens, pointer + 1, node)
+      return parse(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      parse(tokens, pointer + 1, node.parent)
+      return parse(tokens, pointer + 1, node.parent)
     }
-
-    return node
   }
 
   if (token.value === "[") {
@@ -174,9 +161,13 @@ export function parse(
     }
     node.children.push(n)
 
-    parse(tokens, pointer + 1, n)
+    const [lastPointer] = parse(tokens, pointer + 1, n)
 
-    return node
+    if (node.parent === null || node.parent.type === NodeType.Root) {
+      return [lastPointer, node]
+    }
+
+    return parse(tokens, lastPointer + 1, node)
   }
 
   if (token.value === "{") {
@@ -188,8 +179,14 @@ export function parse(
     }
     node.children.push(n)
 
-    parse(tokens, pointer + 1, n)
+    const [lastPointer] = parse(tokens, pointer + 1, n)
 
-    return node
+    if (node.parent === null || node.parent.type === NodeType.Root) {
+      return [lastPointer, node]
+    }
+
+    return parse(tokens, lastPointer + 1, node)
   }
+
+  return [pointer, node]
 }

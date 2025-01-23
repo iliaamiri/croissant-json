@@ -28,27 +28,28 @@ export function lex(
   text: string,
   caret: number = 0,
   tokens: Token[] = [],
-  openingDelimiter: OpeningDelimiter | null = null,
-  nextClosingDelimiter: ClosingDelimiter | null = null
+  isRoot: boolean = true,
+  nextClosingDelimiter: ClosingDelimiter | null = null,
+  lineNumber: number = 1
 ): [Token[], number] {
   const character = text[caret]
 
   log(
-    "@lex -> openingSeparator:",
-    `'${openingDelimiter}'`,
+    "@lex -> isRoot:",
+    `'${isRoot}'`,
     "nextClosingDelimiter:",
     `'${nextClosingDelimiter}'`
   )
   log(" caret =", caret, "character", text[caret])
 
-  if (character === os.EOL) {
-    return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
+  if (character === os.EOL || character === "\r" || character === "\n" || character === "\r\n") {
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber + 1)
   }
   if (character === undefined) {
     return [tokens, caret]
   }
   if (character === " ") {
-    return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
   if (character === nextClosingDelimiter) {
     return [tokens, caret]
@@ -63,82 +64,43 @@ export function lex(
     tokens.push({
       name: TokenName.FieldSeparator,
       value: fieldSeparator,
-      line: 1
+      line: lineNumber
     })
 
-    return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
   if (character === operator) {
-    tokens.push({ name: TokenName.Operator, value: operator, line: 1 })
+    tokens.push({ name: TokenName.Operator, value: operator, line: lineNumber })
 
-    return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
+    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
-  if (Object.keys(delimiterPairs).find((s) => s === character)) {
-    const tokenName =
-      character === "{" ? TokenName.ObjectDelimiter : TokenName.ArrayDelimiter
-    tokens.push({ name: tokenName, value: character, line: 1 })
+  if (character === '[' || character === '{') {
+    const tokenName = character === "{" ? TokenName.ObjectDelimiter : TokenName.ArrayDelimiter
 
-    const closingSeparator = delimiterPairs[character as OpeningDelimiter]
+    const openingDelimiter = character as OpeningDelimiter
+    const closingDelimiter = delimiterPairs[openingDelimiter]
 
+    tokens.push({ name: tokenName, value: openingDelimiter, line: lineNumber })
     let [, caretAtClosing] = lex(
       text,
       caret + 1,
       tokens,
-      character as OpeningDelimiter,
-      closingSeparator
+      false,
+      closingDelimiter,
+      lineNumber
     )
+    tokens.push({ name: tokenName, value: closingDelimiter, line: lineNumber })
 
-    tokens.push({ name: tokenName, value: closingSeparator, line: 1 })
-
-    log("---->", text[caretAtClosing])
-
-    const rootLevelObject = caret === 0
-
-    caret = caretAtClosing + 1
-    while (
-      text[caret] !== undefined &&
-      (text[caret].trim().length === 0 || text[caret].trim() === os.EOL)
-    ) {
-      caret += 1
+    if (isRoot) {
+      return [tokens, caretAtClosing];
     }
 
-    log("--->", text[caret], rootLevelObject)
-
-    if (!rootLevelObject) {
-      if (text[caret] === undefined) {
-        throw new Error(
-          `Missing an ending at (caret ${caret}): ${text.slice(caret - 1)}`
-        )
-      }
-
-      if (Object.values(delimiterPairs).includes(text[caret] as any)) {
-        return [tokens, caret]
-      }
-
-      if (text[caret] === fieldSeparator) {
-        tokens.push({
-          name: TokenName.FieldSeparator,
-          value: text[caret],
-          line: 1
-        })
-        return lex(text, caret + 1, tokens, null, null)
-      }
-    }
-
-    if (rootLevelObject) {
-      if (text[caret] !== undefined) {
-        throw new Error(
-          `Unexpected character at the end of object at (caret ${caret}): ${text.slice(caretAtClosing, caretAtClosing + 5)}`
-        )
-      }
-    }
-
-    return [tokens, caretAtClosing]
+    return lex(text, caretAtClosing + 1, tokens, false, nextClosingDelimiter, lineNumber)
   }
 
   // Handle string
   if (character === '"') {
-    tokens.push({ name: TokenName.StringLiteral, value: "", line: 1 })
+    tokens.push({ name: TokenName.StringLiteral, value: "", line: lineNumber })
 
     caret += 1
 
@@ -170,7 +132,7 @@ export function lex(
     character === "-" ||
     character === "+"
   ) {
-    tokens.push({ name: TokenName.NumberLiteral, value: character, line: 1 })
+    tokens.push({ name: TokenName.NumberLiteral, value: character, line: lineNumber })
 
     caret += 1
 
@@ -193,7 +155,7 @@ export function lex(
       }
     }
 
-    return lex(text, caret, tokens, openingDelimiter, nextClosingDelimiter)
+    return lex(text, caret, tokens, isRoot, nextClosingDelimiter, lineNumber)
   }
 
   // Handle true
@@ -206,7 +168,7 @@ export function lex(
       )
     }
 
-    tokens.push({ name: TokenName.TrueLiteral, value: word, line: 1 })
+    tokens.push({ name: TokenName.TrueLiteral, value: word, line: lineNumber })
   }
 
   // Handle false
@@ -219,7 +181,7 @@ export function lex(
       )
     }
 
-    tokens.push({ name: TokenName.FalseLiteral, value: word, line: 1 })
+    tokens.push({ name: TokenName.FalseLiteral, value: word, line: lineNumber })
   }
 
   // Handle null
@@ -232,8 +194,8 @@ export function lex(
       )
     }
 
-    tokens.push({ name: TokenName.NullLiteral, value: word, line: 1 })
+    tokens.push({ name: TokenName.NullLiteral, value: word, line: lineNumber })
   }
 
-  return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
+  return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
 }
