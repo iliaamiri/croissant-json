@@ -1,6 +1,6 @@
 {
   "name": "croissant-json",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A better JSON library that supports trailing commas and comments. Made for recreational purposes.",
   "module": "index.ts",
   "type": "module",
