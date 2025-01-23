@@ -177,6 +177,7 @@ export function lex(
 
       if (text[caret] === "\\") {
         // todo: handle the escaped stuff
+        tokens[tokens.length - 1].value += '"'
 
         caret += 2
         continue
