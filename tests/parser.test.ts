@@ -1,10 +1,18 @@
 import { expect, it } from "vitest"
 import { jsonParse } from ".."
 
-const invalidCases = []
-
-const cases = [
+const invalidCases = [
   `lol`,
+  `{ " foo":1,,}`,
+  `{ " foo"1,} `,
+  `{[1, 2], 1, 30}`,
+  `{{""}}`,
+  `{ " foo:1}`,
+  `trux`,
+  `falsx`
+]
+
+const someValidCases = [
   `"lol"`,
   `1`,
   `-1`,
@@ -13,9 +21,7 @@ const cases = [
   `+11.1`,
   `+11e10`,
   `true`,
-  `trux`,
   `false`,
-  `falsx`,
   `null`,
   `[]`,
   `[1, 2]`,
@@ -30,30 +36,33 @@ const cases = [
         "goo": false,
         "sal": null,
         "wow": [1, 2, "str", true]}`,
-  `{{""}}`,
   `{"foo":{}}`,
-  `{[1, 2], 1, 30}`,
   `{ "foo": "bar" }`,
   `{"foo":"bar"}`,
   `{ " foo\\"":1}`,
   `{"foo":"bar","choco": "dog"}`,
   `{"foo": false,"choco": 1}`,
   `{"foo":1}`,
-  `{ " foo:1}`,
-  `{ " foo":1,,}`,
-  `{ " foo":1,}`,
-  `{ " foo"1,} `
+  `{ " foo":1,}`
 ]
 
 it("should work generally", () => {
-  cases.forEach((c) => {
+  someValidCases.forEach((c) => {
+    jsonParse(c)
+  })
+})
+
+it("should throw errors when given invalid cases", () => {
+  invalidCases.forEach((c) => {
+    let threw = false
     try {
-      const result = jsonParse(c)
+      jsonParse(c)
+    } catch (e) {
+      threw = true
+    }
 
-      const deFacto = JSON.parse(c)
-
-      expect(result).toMatchObject(deFacto)
-    } catch (e) {}
+    // @ts-ignore - the toBe does have a second argument
+    expect(threw).toBe(true, `Expected to throw an error for the case: ${c}`)
   })
 })
 
