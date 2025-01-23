@@ -42,14 +42,54 @@ export function lex(
   )
   log(" caret =", caret, "character", text[caret])
 
-  if (character === os.EOL || character === "\r" || character === "\n" || character === "\r\n") {
-    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber + 1)
+  // skip comments
+  if (character === "/" && text[caret + 1] === "/") {
+    caret += 2
+    while (
+      text[caret] !== os.EOL &&
+      text[caret] !== "\n" &&
+      text[caret] !== "\r" &&
+      text[caret] !== "\r\n"
+    ) {
+      caret += 1
+    }
+
+    return lex(
+      text,
+      caret,
+      tokens,
+      isRoot,
+      nextClosingDelimiter,
+      lineNumber + 1
+    )
+  }
+  if (
+    character === os.EOL ||
+    character === "\r" ||
+    character === "\n" ||
+    character === "\r\n"
+  ) {
+    return lex(
+      text,
+      caret + 1,
+      tokens,
+      isRoot,
+      nextClosingDelimiter,
+      lineNumber + 1
+    )
   }
   if (character === undefined) {
     return [tokens, caret]
   }
   if (character === " ") {
-    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
+    return lex(
+      text,
+      caret + 1,
+      tokens,
+      isRoot,
+      nextClosingDelimiter,
+      lineNumber
+    )
   }
   if (character === nextClosingDelimiter) {
     return [tokens, caret]
@@ -67,15 +107,30 @@ export function lex(
       line: lineNumber
     })
 
-    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
+    return lex(
+      text,
+      caret + 1,
+      tokens,
+      isRoot,
+      nextClosingDelimiter,
+      lineNumber
+    )
   }
   if (character === operator) {
     tokens.push({ name: TokenName.Operator, value: operator, line: lineNumber })
 
-    return lex(text, caret + 1, tokens, isRoot, nextClosingDelimiter, lineNumber)
+    return lex(
+      text,
+      caret + 1,
+      tokens,
+      isRoot,
+      nextClosingDelimiter,
+      lineNumber
+    )
   }
-  if (character === '[' || character === '{') {
-    const tokenName = character === "{" ? TokenName.ObjectDelimiter : TokenName.ArrayDelimiter
+  if (character === "[" || character === "{") {
+    const tokenName =
+      character === "{" ? TokenName.ObjectDelimiter : TokenName.ArrayDelimiter
 
     const openingDelimiter = character as OpeningDelimiter
     const closingDelimiter = delimiterPairs[openingDelimiter]
@@ -92,10 +147,17 @@ export function lex(
     tokens.push({ name: tokenName, value: closingDelimiter, line: lineNumber })
 
     if (isRoot) {
-      return [tokens, caretAtClosing];
+      return [tokens, caretAtClosing]
     }
 
-    return lex(text, caretAtClosing + 1, tokens, false, nextClosingDelimiter, lineNumber)
+    return lex(
+      text,
+      caretAtClosing + 1,
+      tokens,
+      false,
+      nextClosingDelimiter,
+      lineNumber
+    )
   }
 
   // Handle string
@@ -132,7 +194,11 @@ export function lex(
     character === "-" ||
     character === "+"
   ) {
-    tokens.push({ name: TokenName.NumberLiteral, value: character, line: lineNumber })
+    tokens.push({
+      name: TokenName.NumberLiteral,
+      value: character,
+      line: lineNumber
+    })
 
     caret += 1
 
