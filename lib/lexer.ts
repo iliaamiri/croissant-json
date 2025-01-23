@@ -31,7 +31,7 @@ export function lex(
   isRoot: boolean = true,
   nextClosingDelimiter: ClosingDelimiter | null = null,
   lineNumber: number = 1
-): [Token[], number] {
+): [Token[], number, number] {
   const character = text[caret]
 
   log(
@@ -79,7 +79,7 @@ export function lex(
     )
   }
   if (character === undefined) {
-    return [tokens, caret]
+    return [tokens, caret, lineNumber]
   }
   if (character === " ") {
     return lex(
@@ -92,7 +92,7 @@ export function lex(
     )
   }
   if (character === nextClosingDelimiter) {
-    return [tokens, caret]
+    return [tokens, caret, lineNumber]
   }
   if (character === fieldSeparator) {
     if (tokens[tokens.length - 1].value === fieldSeparator) {
@@ -136,7 +136,7 @@ export function lex(
     const closingDelimiter = delimiterPairs[openingDelimiter]
 
     tokens.push({ name: tokenName, value: openingDelimiter, line: lineNumber })
-    let [, caretAtClosing] = lex(
+    let [, caretAtClosing, ln] = lex(
       text,
       caret + 1,
       tokens,
@@ -144,10 +144,10 @@ export function lex(
       closingDelimiter,
       lineNumber
     )
-    tokens.push({ name: tokenName, value: closingDelimiter, line: lineNumber })
+    tokens.push({ name: tokenName, value: closingDelimiter, line: ln })
 
     if (isRoot) {
-      return [tokens, caretAtClosing]
+      return [tokens, caretAtClosing, ln]
     }
 
     return lex(
@@ -156,7 +156,7 @@ export function lex(
       tokens,
       false,
       nextClosingDelimiter,
-      lineNumber
+      ln
     )
   }
 
