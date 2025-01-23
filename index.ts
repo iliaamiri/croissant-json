@@ -1,1 +1,1 @@
-export { jsonParse } from "./lib/index.ts"
+export { jsonParse, jsonStringify } from "./lib/index.ts"

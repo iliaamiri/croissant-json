@@ -1,16 +1,6 @@
 import os from "node:os"
 
-function spaces(n: number) {
-  let str = ""
-
-  for (let i = 0; i < n; i++) {
-    str += " "
-  }
-
-  return str
-}
-
-export function jsonStringify(value: any, indent?: number): string {
+export function stringify(value: any, indent?: number, multiplier: number = 0) {
   let str = ""
 
   if (Array.isArray(value)) {
@@ -18,14 +8,13 @@ export function jsonStringify(value: any, indent?: number): string {
 
     if (indent) {
       str += os.EOL
+      multiplier += 1
     }
 
     value.forEach((item, i) => {
-      if (indent) {
-        str += spaces(indent)
-      }
+      str += leSpaces(indent, multiplier)
 
-      str += jsonStringify(item, indent ? indent * 2 : undefined)
+      str += stringify(item, indent, multiplier)
 
       if (value.length - 1 !== i) {
         str += ","
@@ -40,7 +29,7 @@ export function jsonStringify(value: any, indent?: number): string {
       str += os.EOL
     }
 
-    str += "]"
+    str += leSpaces(indent, multiplier - 1) + "]"
 
     return str
   }
@@ -56,27 +45,23 @@ export function jsonStringify(value: any, indent?: number): string {
 
     if (indent) {
       str += os.EOL
+      multiplier += 1
     }
 
     let i = 0
     for (const key in value) {
-      if (indent) {
-        str += spaces(indent)
-      }
-
-      str += `"${key}":`
-
+      str += leSpaces(indent, multiplier) + `"${key}":`
       if (indent) {
         str += spaces(1)
       }
 
-      str += jsonStringify(value[key], indent ? indent * 2 : undefined)
+      str += stringify(value[key], indent, multiplier)
 
       if (Object.keys(value).length - 1 !== i) {
         str += ","
 
         if (indent) {
-          str += os.EOL + spaces(1)
+          str += os.EOL
         }
       }
 
@@ -87,7 +72,7 @@ export function jsonStringify(value: any, indent?: number): string {
       str += os.EOL
     }
 
-    str += "}"
+    str += leSpaces(indent, multiplier - 1) + "}"
 
     return str
   }
@@ -100,6 +85,24 @@ export function jsonStringify(value: any, indent?: number): string {
   }
   if (typeof value === "number") {
     str += String(value)
+  }
+
+  return str
+}
+
+function leSpaces(indent?: number, multiplier: number = 0) {
+  if (!indent) {
+    return ""
+  }
+
+  return spaces(indent * multiplier)
+}
+
+function spaces(n: number) {
+  let str = ""
+
+  for (let i = 0; i < n; i++) {
+    str += " "
   }
 
   return str

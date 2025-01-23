@@ -1,11 +1,16 @@
 import { lex } from "./lexer.ts"
-import { parse } from "./parser.ts"
+import { parseTokens } from "./parser.ts"
 import { buildObject } from "./builder.ts"
+import { stringify } from "./stringifier.ts"
 
 export function jsonParse<T>(value: string): T {
   const [tokens] = lex(value)
 
-  const [, parsed] = parse(tokens)
+  const [, parsed] = parseTokens(tokens)
 
   return buildObject(parsed) as T
+}
+
+export function jsonStringify(value: any, indent?: number): string {
+  return stringify(value, indent)
 }

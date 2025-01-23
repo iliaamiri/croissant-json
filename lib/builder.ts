@@ -8,10 +8,6 @@ export function buildObject(node: Node) {
     case NodeType.Root:
       const child = node.children[0]
 
-      // if (child.type !== NodeType.Array && child.type !== NodeType.Object) {
-      //   throw new Error("Only arrays or objects are allowed as root")
-      // }
-
       return buildObject(child)
     case NodeType.Array:
       const arr: any[] = []

@@ -1,6 +1,5 @@
 import { expect, it } from "vitest"
-
-import { jsonStringify } from "../lib/stringifier.ts"
+import { jsonStringify } from "../lib"
 
 function helper(obj: any) {
   const string = jsonStringify(obj)
@@ -38,7 +37,12 @@ it("primitive value of number", () => {
 it("beautiful", () => {
   const obj = {
     foo: "bar",
-    dog: [1, 2, "cat", true, false, 13.3, -1]
+    dog: [1, 2, "cat", true, false, 13.3, -1],
+    nested: {
+      foo: "bar",
+      dog: false,
+      something: true
+    }
   }
 
   const str = jsonStringify(obj, 2)

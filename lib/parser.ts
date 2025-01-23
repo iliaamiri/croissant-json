@@ -19,7 +19,7 @@ export type Node = {
   children: Node[]
 }
 
-export function parse(
+export function parseTokens(
   tokens: Token[],
   pointer: number = 0,
   node: Node = {
@@ -30,7 +30,7 @@ export function parse(
   }
 ): [number, Node] {
   log(
-    "@parse: token",
+    "@parseTokens: token",
     tokens[pointer],
     "pointer:",
     pointer,
@@ -45,19 +45,19 @@ export function parse(
   }
   if (token.value === "]" || token.value === "}") {
     if (node.parent && node.parent.type === NodeType.Array) {
-      return parse(tokens, pointer + 1, node.parent)
+      return parseTokens(tokens, pointer + 1, node.parent)
     } else if (
       node.parent &&
       node.parent.parent &&
       node.parent.type === NodeType.ObjectField
     ) {
-      return parse(tokens, pointer + 1, node.parent.parent)
+      return parseTokens(tokens, pointer + 1, node.parent.parent)
     }
 
     return [pointer, node]
   }
   if (token.value === ",") {
-    return parse(tokens, pointer + 1, node)
+    return parseTokens(tokens, pointer + 1, node)
   }
 
   if (node.type === NodeType.Object) {
@@ -82,7 +82,7 @@ export function parse(
       )
     }
 
-    return parse(tokens, pointer + 1, n)
+    return parseTokens(tokens, pointer + 1, n)
   }
 
   if (token.name === TokenName.NumberLiteral) {
@@ -94,10 +94,10 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      return parse(tokens, pointer + 1, node)
+      return parseTokens(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      return parse(tokens, pointer + 1, node.parent)
+      return parseTokens(tokens, pointer + 1, node.parent)
     }
   }
   if (token.name === TokenName.StringLiteral) {
@@ -109,10 +109,10 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      return parse(tokens, pointer + 1, node)
+      return parseTokens(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      return parse(tokens, pointer + 1, node.parent)
+      return parseTokens(tokens, pointer + 1, node.parent)
     }
   }
   if (token.name === TokenName.NullLiteral) {
@@ -124,10 +124,10 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      return parse(tokens, pointer + 1, node)
+      return parseTokens(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      return parse(tokens, pointer + 1, node.parent)
+      return parseTokens(tokens, pointer + 1, node.parent)
     }
 
     return [pointer, node]
@@ -145,10 +145,10 @@ export function parse(
     })
 
     if (node.type !== NodeType.ObjectField) {
-      return parse(tokens, pointer + 1, node)
+      return parseTokens(tokens, pointer + 1, node)
     }
     if (node.type === NodeType.ObjectField && node.parent) {
-      return parse(tokens, pointer + 1, node.parent)
+      return parseTokens(tokens, pointer + 1, node.parent)
     }
   }
 
@@ -161,13 +161,13 @@ export function parse(
     }
     node.children.push(n)
 
-    const [lastPointer] = parse(tokens, pointer + 1, n)
+    const [lastPointer] = parseTokens(tokens, pointer + 1, n)
 
     if (node.parent === null || node.parent.type === NodeType.Root) {
       return [lastPointer, node]
     }
 
-    return parse(tokens, lastPointer + 1, node)
+    return parseTokens(tokens, lastPointer + 1, node)
   }
 
   if (token.value === "{") {
@@ -179,13 +179,13 @@ export function parse(
     }
     node.children.push(n)
 
-    const [lastPointer] = parse(tokens, pointer + 1, n)
+    const [lastPointer] = parseTokens(tokens, pointer + 1, n)
 
     if (node.parent === null || node.parent.type === NodeType.Root) {
       return [lastPointer, node]
     }
 
-    return parse(tokens, lastPointer + 1, node)
+    return parseTokens(tokens, lastPointer + 1, node)
   }
 
   return [pointer, node]
