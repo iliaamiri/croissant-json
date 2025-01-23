@@ -2,10 +2,10 @@
 Croissant JSON (pronounced ʒeɪsɔn [🔉](https://youtu.be/uR-f4b0G9lo?si=p68YVjvRKJnR6JDw&t=45)), is a JSON library I made for recreational
 purposes.
 
-**DISCLAIMER**: This is still work-in-progress, of course, and I work on it whenever 
-I have the mood to work on it. So, PLEASE do not use this in your projects that
-you care about.
+**DISCLAIMER**: This is a hobby project and I work on it whenever I have the mood to work on it. So, PLEASE do not use 
+this in your projects that you care about. Use it at your own discretion.
 
+Example:
 ```ts
 const jsonable = `{
     "name": "Ilia",
