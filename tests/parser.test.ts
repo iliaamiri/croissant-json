@@ -155,7 +155,7 @@ it("trailing commas in arrays", () => {
 
   const parsed = jsonParse(jsonable)
 
-  expect(parsed).toMatchObject([1])
+  expect(parsed).toMatchObject([1, 2, 3])
 })
 
 it("primitive values", () => {
