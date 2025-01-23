@@ -39,7 +39,7 @@ export function lex(
     "nextClosingDelimiter:",
     `'${nextClosingDelimiter}'`
   )
-  log("caret =", caret, "character", text[caret])
+  log(" caret =", caret, "character", text[caret])
 
   if (character === os.EOL) {
     return lex(text, caret + 1, tokens, openingDelimiter, nextClosingDelimiter)
@@ -90,16 +90,19 @@ export function lex(
 
     tokens.push({ name: tokenName, value: closingSeparator, line: 1 })
 
-    log("---->", caret, caretAtClosing + 1, text[caretAtClosing])
+    log("---->", text[caretAtClosing])
 
     const rootLevelObject = caret === 0
 
     caret = caretAtClosing + 1
-    while (text[caret] === " ") {
+    while (
+      text[caret] !== undefined &&
+      (text[caret].trim().length === 0 || text[caret].trim() === os.EOL)
+    ) {
       caret += 1
     }
 
-    log("--->", caret, text[caret], rootLevelObject)
+    log("--->", text[caret], rootLevelObject)
 
     if (!rootLevelObject) {
       if (text[caret] === undefined) {
@@ -134,12 +137,12 @@ export function lex(
   }
 
   // Handle string
-  if (character === "\"") {
+  if (character === '"') {
     tokens.push({ name: TokenName.StringLiteral, value: "", line: 1 })
 
     caret += 1
 
-    while (text[caret] !== "\"") {
+    while (text[caret] !== '"') {
       log("text[caret] =", text[caret])
 
       if (text[caret] === undefined) {
@@ -175,7 +178,7 @@ export function lex(
       !isNaN(parseInt(text[caret])) ||
       text[caret] === "e" ||
       text[caret] === "E"
-      ) {
+    ) {
       tokens[tokens.length - 1].value += text[caret]
       caret += 1
     }

@@ -65,6 +65,7 @@ export function parse(
   }
 
   if (node.type === NodeType.Object) {
+    console.log(token)
     if (token.name !== TokenName.StringLiteral) {
       throw new Error("Object key must be a string")
     }
@@ -99,7 +100,12 @@ export function parse(
       children: []
     })
 
-    parse(tokens, pointer + 1, node)
+    if (node.type !== NodeType.ObjectField) {
+      parse(tokens, pointer + 1, node)
+    }
+    if (node.type === NodeType.ObjectField && node.parent) {
+      parse(tokens, pointer + 1, node.parent)
+    }
 
     return node
   }
