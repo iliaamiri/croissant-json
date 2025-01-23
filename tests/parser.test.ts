@@ -177,6 +177,6 @@ it("primitive values", () => {
   jsonables.forEach(([c, expected]) => {
     const parsed = jsonParse(c)
 
-    expect(parsed).toMatchObject(expected)
+    expect(parsed).toBe(expected)
   })
 })
