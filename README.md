@@ -1,7 +1,7 @@
 # Croissant JSON
 
 Croissant JSON (pronounced ʒeɪsɔn [🔉](https://youtu.be/uR-f4b0G9lo?si=p68YVjvRKJnR6JDw&t=45)), is a better JSON library
-I made for recreational purposes that supports **tailing commas** and **comments**!
+I made for recreational purposes that supports **trailing commas** and **comments**!
 
 **DISCLAIMER**: This is a hobby project and I work on it whenever I have the mood to work on it. So, PLEASE do not use
 this in your projects that you care about. Use it at your own discretion.
