@@ -6,7 +6,7 @@ I made for recreational purposes that supports **tailing commas** and **comments
 **DISCLAIMER**: This is a hobby project and I work on it whenever I have the mood to work on it. So, PLEASE do not use
 this in your projects that you care about. Use it at your own discretion.
 
-Example:
+### Example (Parsing JSON string):
 
 ```ts
 const jsonable = `{
@@ -62,6 +62,38 @@ console.log(parsed)
         },
       },
     }
+*/
+```
+
+### Example (Stringifying JSON object):
+
+```ts
+const obj = { foo: "bar", dog: [1, 2, "cat", true, false, 13.3, -1],
+  nested: { foo: "bar", dog: false, something: true }
+}
+
+const str = jsonStringify(obj, 2) // indentation level is 2
+
+console.log(str)
+
+/* output
+{
+  "foo": "bar",
+  "dog": [
+    1,
+    2,
+    "cat",
+    true,
+    false,
+    13.3,
+    -1
+  ],
+  "nested": {
+    "foo": "bar",
+    "dog": false,
+    "something": true
+  }
+}
 */
 ```
 
