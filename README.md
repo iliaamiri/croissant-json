@@ -10,7 +10,7 @@ Example:
 const jsonable = `{
     "name": "Ilia",
     "favoriteNumber": 68,
-    "favoriteIceCreamFlavor": "Chocolate Chip Cookie",
+    "favoriteIceCreamFlavor": "Chocolate Chip Cookie", // It even supports comments!
     "favoriteOs": "Ubuntu",
     "osUsingBecauseYouHaveTo": "Windows",
     "likesGaming": false,
@@ -29,7 +29,7 @@ const jsonable = `{
             "null": null,
             "array": [1, 2, true, [], {}, "string", -2]
         }
-    }
+    }, // <--- notice the trailing comma is allowed. _Ungodly_ by the spec, I know, but I like it.
 }`;
 
 const parsed = jsonParse(jsonable);
